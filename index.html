@@ -173,10 +173,9 @@
 }
 
 .piece {
-    background-image:url('https://i.pinimg.com/736x/5f/58/b3/5f58b3d1b46d3f767f4d8ad0b402a642.jpg');
-    background-size:300px 300px;
     cursor:pointer;
     border:2px solid white;
+    background-size:300px 300px;
 }
 </style>
 </head>
@@ -220,13 +219,25 @@
 	<script>
 let popup = document.getElementById("popup");
 let puzzle = document.getElementById("puzzle");
-let video = document.querySelector("video");
+let video = document.getElementById("video");
 
 let positions = [0,1,2,3];
 let selected = null;
+let snapshotImage = null;
 
 video.addEventListener("play", function(){
     video.pause();
+
+    // Ambil frame video pakai canvas
+    let canvas = document.createElement("canvas");
+    canvas.width = 300;
+    canvas.height = 300;
+    let ctx = canvas.getContext("2d");
+
+    ctx.drawImage(video, 0, 0, 300, 300);
+
+    snapshotImage = canvas.toDataURL();
+
     popup.style.display="flex";
     createPuzzle();
 });
@@ -243,6 +254,8 @@ function createPuzzle(){
         let div=document.createElement("div");
         div.className="piece";
         div.dataset.pos=pos;
+
+        div.style.backgroundImage = `url(${snapshotImage})`;
         div.style.backgroundPosition =
             (pos%2)*-150 + "px " + (Math.floor(pos/2))*-150 + "px";
 
